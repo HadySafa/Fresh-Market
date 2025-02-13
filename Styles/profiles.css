@@ -1,0 +1,155 @@
+:root {
+    --color1: #00b392;
+    --color2: #ecf8f8;
+    --color3: #E27D60;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color2);
+    font-family: 'Roboto', sans-serif;
+}
+
+.mainContainer{
+    min-width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+}
+
+.orders-section, .new-item-section,.edit-quantity-section,.delete-item-section,.feedback-form{
+    min-width: 90vw;
+    max-width: 90vw;
+    background-color: white;
+    border-radius: 5px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.order{
+    border-bottom: 2px solid var(--color1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 5px;
+    padding: 0.5rem;
+    color: black;
+}
+
+.order > div{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.order>button{
+    background-color: var(--color1);
+    border: none;
+    outline: none;
+    color: white;
+    border-radius: 5px;
+    padding: 0.75rem;
+    cursor: pointer;
+}
+
+.id{
+    font-weight: bold;
+    color: var(--color1);
+}
+
+.new-item-section>form, .edit-quantity-section>form,.delete-item-section>form{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.input{
+    display: block;
+    min-width: 100%;
+    margin-top: 5px;
+    padding: 5px;
+    border: 2px solid var(--color1);
+    border-radius: 5px;
+    outline: none;
+    background-color: inherit;
+}
+
+.input:focus{
+    border-color: var(--color3);
+}
+
+.file-input{
+    display: block;
+    margin-top: 5px;
+}
+
+.file-input>button{
+    background-color: var(--color1);
+}
+
+.submit{
+    background-color: var(--color1);
+    color: var(--color2);
+    transition: all 0.3s ease;
+    padding: 0.5rem 0;
+}
+
+.submit:hover{
+    transform: scaleY(1.1);
+    cursor: pointer;
+}
+
+.error{
+    color: var(--color3);
+    font-size: 14px;
+}
+
+.delete{
+    background-color: var(--color3);
+    border: none;
+}
+
+.dropdown{
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+
+.orders-container{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.error{
+    color: var(--color3);
+    font-size: 0.75rem;
+}
+
+
+@media (min-width: 600px) {
+    .orders-section,.new-item-section,.edit-quantity-section,.delete-item-section,.feedback-form{
+        min-width: 75vw;
+        max-width: 75vw;
+    }
+}
+
+@media (min-width: 1024px) {
+    .orders-section,.new-item-section,.edit-quantity-section,.delete-item-section,.feedback-form{
+        min-width: 60vw;
+        max-width: 60vw;
+    }
+}

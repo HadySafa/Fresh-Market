@@ -1,0 +1,106 @@
+
+:root {
+    --color1: #00b392;
+    --color2: #ecf8f8;
+    --color3: #E27D60;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color2);
+    font-family: 'Roboto', sans-serif;
+}
+
+.form {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    min-width: 90vw;
+    max-width: 90vw;
+    border-radius: 5px;
+}
+
+.form>*{
+    min-width: 90%;
+    max-width: 90%;
+}
+
+.input {
+    display: block;
+    margin: 0.5rem 0;
+    border: 1px solid lightgray;
+    padding: 0.5rem;
+    min-width: 100%;
+    max-width: 100%;
+    border-radius: 2px;
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--color1);
+}
+
+.buttons-container {
+    display: flex;
+    justify-content: end;
+    gap: 1rem;
+}
+
+.button {
+    background-color: lightgray;
+    border: none;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    color: var(--color2);
+}
+
+.button:focus {
+    outline: none;
+    border-color: var(--color1);
+}
+
+.button:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+.submit {
+    background-color: var(--color1);
+    min-width: 50%;
+    max-width: 50%;
+}
+
+.error-message {
+    color: var(--color3);
+    font-size: 0.8rem;
+}
+
+@media (min-width: 600px) {
+    .form {
+        min-width: 75vw;
+        max-width: 75vw;
+    }
+}
+
+@media (min-width: 1024px) {
+    .form {
+        min-width: 60vw;
+        max-width: 60vw;
+    }
+}

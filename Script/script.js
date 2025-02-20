@@ -179,10 +179,11 @@ document.addEventListener("DOMContentLoaded", () => {
             let description = form.querySelector('input[name="Description"]').value;
             let quantity = form.querySelector('input[name="Quantity"]').value;
             let price = form.querySelector('input[name="Price"]').value;
+            let category = form.querySelector('select[name="Category"]').value;
             let image = form.querySelector('input[name="Image"]').files[0];
 
         
-            if (name && description && quantity && price && image) {
+            if (name && description && quantity && price && image && category) {
                 if (!isNaN(quantity) && !isNaN(price)) {
                     if (image.type === "image/jpeg" || image.type === "image/png" || image.type === "image/jpg") {
                         form.submit()
@@ -217,7 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
         form.addEventListener("submit", (e) => {
             e.preventDefault()
 
-            let name = form.querySelector('select[name="Name"]').value;
+            let name = form.querySelector('select[name="Id"]').value;
             let quantity = form.querySelector('input[name="Quantity"]').value;
 
             if (name && quantity) {
@@ -251,7 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
         form.addEventListener("submit", (e) => {
             e.preventDefault()
 
-            let name = form.querySelector('select[name="Name"]').value;
+            let name = form.querySelector('select[name="Id"]').value;
 
             if (name) {
                 form.submit()
@@ -305,7 +306,6 @@ document.addEventListener("DOMContentLoaded", () => {
 )
 
 // feedback submission
-// handle delete item
 document.addEventListener("DOMContentLoaded", () => {
 
     const form = document.getElementById("feedback-form")

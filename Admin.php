@@ -1,3 +1,16 @@
+<?php
+require_once "./Backend/DatabaseHelper.php";
+
+$query = "SELECT Id,Name FROM Products";
+$connection = DatabaseHelper::createConnection();
+try {
+    $result = $connection->query($query);
+    $data = $result->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Error occcured: " . $e->getMessage());
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,12 +33,12 @@
             <h1>Fresh Market</h1>
             <i id="icon" class="fa-solid fa-bars"></i>
             <nav id="nav" class="nav">
-                <a class="navlink" href="./index.html">Home</a>
-                <a class="navlink" href="./Products.html">Products</a>
-                <a class="navlink" href="./Search.html">Search</a>
-                <a class="navlink" href="./Cart.html">Cart</a>
-                <a class="navlink active" href="./Admin.html">Dashboard</a>
-                <a class="navlink" href="./Login.html">Login | Register</a>
+                <a class="navlink" href="./index.php">Home</a>
+                <a class="navlink" href="./Products.php">Products</a>
+                <a class="navlink" href="./Search.php">Search</a>
+                <a class="navlink" href="./Cart.php">Cart</a>
+                <a class="navlink active" href="./Admin.php">Dashboard</a>
+                <a class="navlink" href="./Login.php">Login | Register</a>
             </nav>
         </header>
 
@@ -51,14 +64,18 @@
 
         <section class="edit-quantity-section" id="editQuantity">
             <h2>Edit Item Quantity <i class="fa-regular fa-pen-to-square"></i></h2>
-            <form id="edit-item-form" method="post">
+            <form action="./Backend/EditQuantity.php" id="edit-item-form" method="post">
                 <label>
                     Select Item
-                    <select name="Name" class="dropdown">
+                    <select name="Id" class="dropdown">
                         <option value="">Name</option>
-                        <option value="1">Mint</option>
-                        <option value="2">Chcolate</option>
-                        <option value="3">Chtoura</option>
+                        <?php
+                        for ($i = 0; $i < count($data); $i++) {
+                            $id = $data[$i]['Id'];
+                            $name = $data[$i]['Name'];
+                            echo "<option value='$id'>$name</option>";
+                        }
+                        ?>
                     </select>
                 </label>
                 <label>
@@ -74,14 +91,18 @@
 
         <section class="delete-item-section" id="deleteItem">
             <h2>Delete Item <i class="fa-solid fa-trash"></i></h2>
-            <form id="delete-item-form" method="post">
+            <form action="./Backend/DeleteItem.php" id="delete-item-form" method="post">
                 <label>
                     Select Item
-                    <select name="Name" class="dropdown">
+                    <select name="Id" class="dropdown">
                         <option value="">Name</option>
-                        <option value="1">Mint</option>
-                        <option value="2">Chcolate</option>
-                        <option value="3">Chtoura</option>
+                        <?php
+                        for ($i = 0; $i < count($data); $i++) {
+                            $id = $data[$i]['Id'];
+                            $name = $data[$i]['Name'];
+                            echo "<option value='$id'>$name</option>";
+                        }
+                        ?>
                     </select>
                 </label>
                 <div class="error" id="delete-item-error-message"></div>
@@ -93,7 +114,7 @@
 
         <section class="new-item-section" id="newItem">
             <h2>New Item <i class="fa-solid fa-plus"></i></h2>
-            <form id="new-item-form" method="post" enctype="multipart/form-data">
+            <form action="./Backend/AddItem.php" id="new-item-form" method="post" enctype="multipart/form-data">
                 <label>
                     Name
                     <input class="input" name="Name" type="text">
@@ -109,6 +130,15 @@
                 <label>
                     Quantity
                     <input class="input" name="Quantity" type="number">
+                </label>
+                <label>
+                    Category
+                    <select name="Category" class="dropdown">
+                        <option value="">Choose</option>
+                        <option value="Fruits&Vegetables">Fruits & Vegetables</option>
+                        <option value="Groceries">Groceries</option>
+                        <option value="Snacks&Beverages">Snacks & Beverages</option>
+                    </select>
                 </label>
                 <label>
                     Image

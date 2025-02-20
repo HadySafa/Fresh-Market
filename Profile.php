@@ -1,3 +1,14 @@
+<?php
+
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+    if(isset($_POST["Feedback"]) && !empty($_POST["Feedback"])){
+        $feedback = $_POST["Feedback"];
+    }
+}
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,12 +31,12 @@
             <h1>Fresh Market</h1>
             <i id="icon" class="fa-solid fa-bars"></i>
             <nav id="nav" class="nav">
-                <a class="navlink" href="./index.html">Home</a>
-                <a class="navlink" href="./Products.html">Products</a>
-                <a class="navlink" href="./Search.html">Search</a>
-                <a class="navlink" href="./Cart.html">Cart</a>
-                <a class="navlink active" href="./Admin.html">Dashboard</a>
-                <a class="navlink" href="./Login.html">Login | Register</a>
+                <a class="navlink" href="./index.php">Home</a>
+                <a class="navlink" href="./Products.php">Products</a>
+                <a class="navlink" href="./Search.php">Search</a>
+                <a class="navlink" href="./Cart.php">Cart</a>
+                <a class="navlink active" href="./Admin.php">Dashboard</a>
+                <a class="navlink" href="./Login.php">Login | Register</a>
             </nav>
         </header>
 
@@ -49,7 +60,7 @@
             </div>
         </section>
 
-        <form class="feedback-form" id="feedback-form">
+        <form method="post" action="Profile.php" class="feedback-form" id="feedback-form">
             <h2>Give Your Feedback</h2>
             <input class="input" type="text" name="Feedback">
             <div class="error" id="feedbackError"></div>

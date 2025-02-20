@@ -20,12 +20,12 @@
                 <h1>Fresh Market</h1>
                 <i id="icon" class="fa-solid fa-bars"></i>
                 <nav id="nav" class="nav">
-                    <a class="navlink active" href="./index.html">Home</a>
-                    <a class="navlink" href="./Products.html">Products</a>
-                    <a class="navlink" href="./Search.html">Search</a>
-                    <a class="navlink" href="./Cart.html">Cart</a>
-                    <a class="navlink" href="./Admin.html">Dashboard</a>
-                    <a class="navlink" href="./Login.html">Login | Register</a>
+                    <a class="navlink active" href="./index.php">Home</a>
+                    <a class="navlink" href="./Products.php">Products</a>
+                    <a class="navlink" href="./Search.php">Search</a>
+                    <a class="navlink" href="./Cart.php">Cart</a>
+                    <a class="navlink" href="./Admin.php">Dashboard</a>
+                    <a class="navlink" href="./Login.php">Login | Register</a>
                 </nav>
         </header>
 

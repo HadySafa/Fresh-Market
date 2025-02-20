@@ -101,6 +101,8 @@ body {
     padding: 0 0.5rem;
     gap: 0.5rem;
     position: relative;
+    text-decoration: none;
+    color: black;
 }
 
 .product:hover {

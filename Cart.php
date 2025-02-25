@@ -1,3 +1,33 @@
+<?php
+
+session_start();
+require_once "./Backend/DatabaseHelper.php";
+$connection = DatabaseHelper::createConnection();
+
+if (!isset($_SESSION["Id"]) || empty($_SESSION["Id"])) {
+    header("Location: Login.php");
+}
+
+$totalPrice;
+function displayTableRow($data,$quantity){
+    $productName = $data['Name'];
+    $computedPrice = $data['Price'] * $quantity;
+    $totalPrice += $computedPrice;
+    echo "
+    <tr class='row'>
+    <td>$productName</td>
+    <td>$quantity</td>
+    <td>$computedPrice</td>
+    <td><i class='fa-solid fa-trash delete'></i></td>
+    </tr>" ;
+}
+
+function displayTotalPrice(){
+    echo($totalPrice);
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -28,32 +58,33 @@
             </nav>
         </header>
         <div>
-            <table class="table">
-                <tr class="header">
-                    <th>Item Name</th>
-                    <th>Quantity</th>
-                    <th>Computed Price $</th>
-                    <th>Remove</th>
-                </tr>
-                <tr class="row">
-                    <td>Mint</td>
-                    <td>8</td>
-                    <td>455</td>
-                    <td><i class="fa-solid fa-trash delete"></i></td>
-                </tr>
-                <tr class="row">
-                    <td>Mint</td>
-                    <td>8</td>
-                    <td>455</td>
-                    <td><i class="fa-solid fa-trash delete"></i></td>
-                </tr>
-                <tr class="row">
-                    <td>Mint</td>
-                    <td>8</td>
-                    <td>455</td>
-                    <td><i class="fa-solid fa-trash delete"></i></td>
-                </tr>
-            </table>
+            <?php
+                if(isset($_SESSION["Products"])){
+                    echo "<table class='table'>";
+                    echo "<tr class='header'>
+                          <th>Item Name</th>
+                          <th>Quantity</th>
+                          <th>Computed Price $</th>
+                          <th>Remove</th>
+                          </tr>";
+                    for($i=0 ; $i < count($_SESSION["Products"]); $i++){
+                        $productId = $_SESSION["Products"][$i];
+                        try {
+                            $query = "SELECT * FROM Products where Id = ?";
+                            $result = $connection->prepare($query);
+                            $result->execute([$productId]);
+                            $data = $result->fetchAll(PDO::FETCH_ASSOC);
+                            displayTableRow($data[0],$_SESSION['Quantities'][$productId]);
+                        } catch (PDOException $e) {
+                            die("Error occcured: " . $e->getMessage());
+                        }
+                    }
+                    echo "</table>";
+                }
+                else{
+                    echo "No Products Added To Cart";
+                }
+            ?>
             <div class="subContainer">
                 <p>Total <span class="price">$455</span></p>
                 <a href="./Checkout.php">Checkout</a>

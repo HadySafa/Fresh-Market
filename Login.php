@@ -53,9 +53,6 @@ require_once './Backend/DatabaseHelper.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    print_r($_POST);
-    echo "Passed request method";
-
     if (!empty($_POST["PhoneNumber"]) && !empty($_POST["Password"])) {
 
         $query = "SELECT * FROM Users where PhoneNumber = ?";
@@ -65,12 +62,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $result->execute([$_POST["PhoneNumber"]]);
             $data = $result->fetchAll(PDO::FETCH_ASSOC);
             $password = $data[0]["Password"];
-            echo "You are an admin 1";
             if (password_verify($_POST["Password"], $password)) {
                 if ($data[0]["Role"] == "User") {
+                    session_start();
+                    $_SESSION["Role"] = "User";
+                    $_SESSION["PhoneNumber"] = $_POST["PhoneNumber"];
+                    $_SESSION["Id"] = $data[0]["Id"];
                     header("Location: ./Profile.php");
                     exit();
                 } else {
+                    session_start();
+                    $_SESSION["Role"] = "Admin";
+                    $_SESSION["PhoneNumber"] = $_POST["PhoneNumber"];
+                    $_SESSION["Id"] = $data[0]["Id"];
                     header("Location: ./Admin.php");
                     exit();
                 }

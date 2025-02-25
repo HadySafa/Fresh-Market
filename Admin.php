@@ -1,4 +1,16 @@
 <?php
+
+session_start();
+
+if(isset($_SESSION["Id"])){
+    if( $_SESSION["Role"] != "Admin"){
+        header("Location: ./Profile.php");
+    }
+}
+else{
+    header("Location: ./Login.php");
+}
+
 require_once "./Backend/DatabaseHelper.php";
 
 $query = "SELECT Id,Name FROM Products";

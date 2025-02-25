@@ -1,5 +1,16 @@
 <?php
 
+session_start();
+
+if(isset($_SESSION["Id"])){
+    if( $_SESSION["Role"] != "User"){
+        header("Location: ./Admin.php");
+    }
+}
+else{
+    header("Location: ./Login.php");
+}
+
 if($_SERVER["REQUEST_METHOD"] == "POST"){
     if(isset($_POST["Feedback"]) && !empty($_POST["Feedback"])){
         $feedback = $_POST["Feedback"];

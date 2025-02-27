@@ -1,22 +1,53 @@
 <?php
 
-session_start();
+function displayOrder($data)
+{
+    $orderId = $data['Id'];
+    $status = $data["Status"];
+    $time = $data["Timestamp"];
+    echo "
+    <div class='order'>
+        <div>
+            <p>Order Id <span class='id'>$orderId</span></p>
+            <p class='time'>$time</p>
+        </div>
+            <p>$status</p>
+        </div>";
+}
 
-if(isset($_SESSION["Id"])){
-    if( $_SESSION["Role"] != "User"){
+session_start();
+require_once "./Backend/DatabaseHelper.php";
+$connection = DatabaseHelper::createConnection();
+
+if (isset($_SESSION["Id"])) {
+    if ($_SESSION["Role"] != "User") {
         header("Location: ./Admin.php");
     }
-}
-else{
+} else {
     header("Location: ./Login.php");
 }
 
-if($_SERVER["REQUEST_METHOD"] == "POST"){
-    if(isset($_POST["Feedback"]) && !empty($_POST["Feedback"])){
-        $feedback = $_POST["Feedback"];
-    }
+try {
+    $query = "SELECT * FROM orders WHERE UserId = ?";
+    $result = $connection->prepare($query);
+    $result->execute([$_SESSION['Id']]);
+    $data = $result->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Error");
 }
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST["Feedback"]) && !empty($_POST["Feedback"])) {
+        $feedback = $_POST["Feedback"];
+        try {
+            $query = "INSERT INTO reviews (Description,UserId) VALUES (?, ?)";
+            $result = $connection->prepare($query);
+            $result->execute([$feedback, $_SESSION['Id']]);
+        } catch (PDOException $e) {
+            die("Error");
+        }
+    }
+}
 
 ?>
 
@@ -53,22 +84,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
         <section class="orders-section" id="orders">
             <h2>Orders Done <i class="fa-solid fa-check"></i></h2>
-            <div class="orders-container">
-                <div class="order">
-                    <div>
-                        <p>Order Id <span class="id">7885</span></p>
-                        <p>February 12, 2025, 2:30 pm</p>
-                    </div>
-                    <p>Pending</p>
+            <?php if ($data) { ?>
+                <div class="orders-container">
+                    <?php
+                        for($i=0;$i<count($data);$i++){
+                            displayOrder($data[$i]);
+                        }
+                    ?>
                 </div>
-                <div class="order">
-                    <div>
-                        <p>Order Id <span class="id">7885</span></p>
-                        <p>February 12, 2025, 2:30 pm</p>
-                    </div>
-                    <p>Delivered</p>
-                </div>
-            </div>
+            <?php } ?>
+
         </section>
 
         <form method="post" action="Profile.php" class="feedback-form" id="feedback-form">

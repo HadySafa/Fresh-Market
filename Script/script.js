@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
             behavior: 'smooth',
             block: 'center'
         });
-        
+
     }
 
     function function3() {
@@ -182,7 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
             let category = form.querySelector('select[name="Category"]').value;
             let image = form.querySelector('input[name="Image"]').files[0];
 
-        
+
             if (name && description && quantity && price && image && category) {
                 if (!isNaN(quantity) && !isNaN(price)) {
                     if (image.type === "image/jpeg" || image.type === "image/png" || image.type === "image/jpg") {
@@ -297,8 +297,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const nav = document.getElementById("nav")
     const icon = document.getElementById("icon")
 
-    if(nav && icon){
-        icon.addEventListener("click",(e) => {
+    if (nav && icon) {
+        icon.addEventListener("click", (e) => {
             nav.classList.toggle("visibile")
         })
     }
@@ -327,6 +327,29 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
         })
+    }
+
+})
+
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const ordersTime = document.querySelectorAll(".time")
+    const options = {
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric', 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        hour12: true 
+    };
+
+    for(let i = 0; i < ordersTime.length; i++){
+        const utcDateString = ordersTime[i].textContent
+        const utcDate = new Date(utcDateString + " UTC")
+        const readableDate = utcDate.toLocaleString('en-US', options)
+        ordersTime[i].textContent = readableDate
     }
 
 })

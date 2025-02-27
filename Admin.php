@@ -1,13 +1,13 @@
 <?php
 
+
 session_start();
 
-if(isset($_SESSION["Id"])){
-    if( $_SESSION["Role"] != "Admin"){
+if (isset($_SESSION["Id"])) {
+    if ($_SESSION["Role"] != "Admin") {
         header("Location: ./Profile.php");
     }
-}
-else{
+} else {
     header("Location: ./Login.php");
 }
 
@@ -20,6 +20,39 @@ try {
     $data = $result->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     die("Error occcured: " . $e->getMessage());
+}
+
+try {
+    $query = "SELECT * FROM orders WHERE Status = 'Pending'";
+    $result = $connection->query($query);
+    $data = $result->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Error");
+}
+
+function displayOrder($data)
+{
+    $orderId = $data['Id'];
+    $time = $data["Timestamp"];
+    echo "
+    <div class='order'>
+        <div>
+            <p>Order Id <span class='id'>$orderId</span></p>
+            <p class='time'>$time</p>
+        </div>
+            <form method='post'><input type='hidden' name='OrderId' value='$orderId' /><button type='submit'>Deliver</button></form>
+        </div>";
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    try {
+        $query = "UPDATE orders SET Status='Delivered' WHERE Id = ?";
+        $result = $connection->prepare($query);
+        $result->execute([$_POST['OrderId']]);
+        header('Location: ./Admin.php');
+    } catch (PDOException $e) {
+        die("Error");
+    }
 }
 ?>
 
@@ -57,20 +90,11 @@ try {
         <section class="orders-section" id="orders">
             <h2>Pending Orders <i class="fa-regular fa-clock"></i></h2>
             <div class="orders-container">
-                <div class="order">
-                    <div>
-                        <p>Order Id <span class="id">7885</span></p>
-                        <p>February 12, 2025, 2:30 pm</p>
-                    </div>
-                    <button>Deliver</button>
-                </div>
-                <div class="order">
-                    <div>
-                        <p>Order Id <span class="id">7885</span></p>
-                        <p>February 12, 2025, 2:30 pm</p>
-                    </div>
-                    <button>Deliver</button>
-                </div>
+                <?php
+                for ($i = 0; $i < count($data); $i++) {
+                    displayOrder($data[$i]);
+                }
+                ?>
             </div>
         </section>
 

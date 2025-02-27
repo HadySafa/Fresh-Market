@@ -1,3 +1,30 @@
+<?php
+
+require_once './Backend/DatabaseHelper.php';
+
+try {
+    $connection = DatabaseHelper::createConnection();
+    $query = 'SELECT * FROM reviews NATURAL JOIN (SELECT ID AS UserID,Name FROM users) AS users';
+    $result = $connection->query($query);
+    $data = $result->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOEXCEPTION $e) {
+    die("Error occured");
+}
+
+
+function displayReview($data)
+{
+    $name = $data["Name"];
+    $description = $data["Description"];
+    echo "
+         <div class='review'>
+            <p>$description</p>
+            <p>- $name</p>
+        </div>";
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,16 +44,16 @@
     <div class="home-mainContainer">
 
         <header class="main-header">
-                <h1>Fresh Market</h1>
-                <i id="icon" class="fa-solid fa-bars"></i>
-                <nav id="nav" class="nav">
-                    <a class="navlink active" href="./index.php">Home</a>
-                    <a class="navlink" href="./Products.php">Products</a>
-                    <a class="navlink" href="./Search.php">Search</a>
-                    <a class="navlink" href="./Cart.php">Cart</a>
-                    <a class="navlink" href="./Admin.php">Dashboard</a>
-                    <a class="navlink" href="./Login.php">Login | Register</a>
-                </nav>
+            <h1>Fresh Market</h1>
+            <i id="icon" class="fa-solid fa-bars"></i>
+            <nav id="nav" class="nav">
+                <a class="navlink active" href="./index.php">Home</a>
+                <a class="navlink" href="./Products.php">Products</a>
+                <a class="navlink" href="./Search.php">Search</a>
+                <a class="navlink" href="./Cart.php">Cart</a>
+                <a class="navlink" href="./Admin.php">Dashboard</a>
+                <a class="navlink" href="./Login.php">Login | Register</a>
+            </nav>
         </header>
 
         <section id="AboutUs" class="about-section">
@@ -82,20 +109,11 @@
         <section class="customersFeedback-Container" id="CustomersFeedback">
             <h2>Customers Feedback <i class="fa-regular fa-comment"></i></h2>
             <div>
-                <div class="review">
-                    <p>A very good supermarket, always available, and has everything you really need, i had a great
-                        experience! A very good supermarket, always available, and has everything you really need, i had
-                        a great
-                        experience!</p>
-                    <p>- Hady Safa</p>
-                </div>
-                <div class="review">
-                    <p>A very good supermarket, always available, and has everything you really need, i had a great
-                        experience! A very good supermarket, always available, and has everything you really need, i had
-                        a great
-                        experience!</p>
-                    <p>- Hady Safa</p>
-                </div>
+                <?php
+                for($i = 0; $i < count($data);$i++){
+                    displayReview($data[$i]);
+                }
+                ?>
             </div>
         </section>
 

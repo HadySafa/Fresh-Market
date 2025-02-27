@@ -1,3 +1,52 @@
+<?php
+
+function getDateTime()
+{
+    $date = new DateTime('now', new DateTimeZone('UTC'));
+    $isoDate = $date->format('c');
+    return $isoDate;
+}
+
+require_once './Backend/DatabaseHelper.php';
+
+session_start();
+
+if (isset($_SESSION["Id"])) {
+    if(isset($_SESSION["Products"])){
+        $userId = $_SESSION['Id'];
+    }
+    else{
+        header("Location: Cart.php");
+    }
+} else {
+    header("Location: ./Login.php");
+}
+
+$connection = DatabaseHelper::createConnection();
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $locationDescription = $_POST["Location"];
+    $paymentMethod = $_POST["PaymentMethod"];
+    $query = "INSERT INTO orders(UserId,PaymentMethod,Status,Location,TimeStamp) VALUES (?,?,?,?,?)";
+    $result = $connection->prepare($query);
+    $result->execute([$userId, $paymentMethod, "Pending", $locationDescription, getDateTime()]);
+    $orderId = $connection->lastInsertId();
+    if ($orderId) {
+        for ($i = 0; $i < count($_SESSION["Products"]); $i++) {
+            $query = "INSERT INTO transaction(Quantity,ProductId,OrderId) VALUES (?,?,?)";
+            $result = $connection->prepare($query);
+            $productId = $_SESSION['Products'][$i];
+            $quantity = $_SESSION['Quantities'][$productId];
+            $result->execute([$quantity,$productId,$orderId]);
+            unset($_SESSION['Products']);
+            unset($_SESSION['Quantities']);
+            header('Location: ./Profile.php');
+        }
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,7 +62,7 @@
 
 <body>
 
-    <form id="checkout-form" class="form">
+    <form method="POST" id="checkout-form" class="form">
         <h2>Checkout</h2>
         <label>
             Location

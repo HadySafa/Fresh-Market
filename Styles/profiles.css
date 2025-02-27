@@ -55,7 +55,7 @@ body {
     gap: 0.5rem;
 }
 
-.order>button{
+.order button{
     background-color: var(--color1);
     border: none;
     outline: none;
@@ -96,7 +96,7 @@ body {
     margin-top: 5px;
 }
 
-.file-input>button{
+.file-input button{
     background-color: var(--color1);
 }
 

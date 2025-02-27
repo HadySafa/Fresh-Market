@@ -150,6 +150,11 @@ body {
     font-size: 0.75rem;
 }
 
+.remove-styles{
+    background-color: inherit;
+    border: none;
+}
+
 
 @media (min-width: 600px) {
     .mainContainer>div,.form{

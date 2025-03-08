@@ -23,9 +23,17 @@ try {
 }
 
 try {
-    $query = "SELECT * FROM orders WHERE Status = 'Pending'";
+    $query = "SELECT * FROM orders WHERE Status = 'Pending' ORDER BY Id DESC";
     $result = $connection->query($query);
-    $data = $result->fetchAll(PDO::FETCH_ASSOC);
+    $pendingOrders = $result->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Error");
+}
+
+try {
+    $query = "SELECT * FROM orders WHERE Status = 'Delivered' ORDER BY Id DESC";
+    $result = $connection->query($query);
+    $doneOrders = $result->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     die("Error");
 }
@@ -41,6 +49,20 @@ function displayOrder($data)
             <p class='time'>$time</p>
         </div>
             <form method='post'><input type='hidden' name='OrderId' value='$orderId' /><button type='submit'>Deliver</button></form>
+        </div>";
+}
+
+function displayDoneOrder($data)
+{
+    $orderId = $data['Id'];
+    $time = $data["Timestamp"];
+    echo "
+    <div class='order'>
+        <div>
+            <p>Order Id <span class='id'>$orderId</span></p>
+            <p class='time'>$time</p>
+        </div>
+            <p>Delivered</p>
         </div>";
 }
 
@@ -91,8 +113,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <h2>Pending Orders <i class="fa-regular fa-clock"></i></h2>
             <div class="orders-container">
                 <?php
-                for ($i = 0; $i < count($data); $i++) {
-                    displayOrder($data[$i]);
+                for ($i = 0; $i < count($pendingOrders); $i++) {
+                    displayOrder($pendingOrders[$i]);
+                }
+                ?>
+            </div>
+        </section>
+
+        <section class="orders-section" id="orders">
+            <h2>Orders Done <i class="fa-solid fa-check"></i></h2>
+            <div class="orders-container">
+                <?php
+                for ($i = 0; $i < count($doneOrders); $i++) {
+                    displayDoneOrder($doneOrders[$i]);
                 }
                 ?>
             </div>

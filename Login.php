@@ -1,3 +1,41 @@
+<?php
+
+require_once './Backend/DatabaseHelper.php';
+session_start();
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    if (!empty($_POST["PhoneNumber"]) && !empty($_POST["Password"])) {
+
+        try {
+            $query = "SELECT * FROM Users where PhoneNumber = ?";
+            $connection = DatabaseHelper::createConnection();
+            $result = $connection->prepare($query);
+            $result->execute([$_POST["PhoneNumber"]]);
+            $data = $result->fetchAll(PDO::FETCH_ASSOC);
+            $password = $data[0]["Password"];
+            if (password_verify($_POST["Password"], $password)) {
+                if ($data[0]["Role"] == "User") {
+                    $_SESSION["Role"] = "User";
+                    $_SESSION["PhoneNumber"] = $_POST["PhoneNumber"];
+                    $_SESSION["Id"] = $data[0]["Id"];
+                    header("Location: ./Products.php");
+                } else {
+                    $_SESSION["Role"] = "Admin";
+                    $_SESSION["PhoneNumber"] = $_POST["PhoneNumber"];
+                    $_SESSION["Id"] = $data[0]["Id"];
+                    header("Location: ./Admin.php");
+                }
+                exit();
+            }
+        } catch (PDOException $e) {
+            // handle error
+        }
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -42,48 +80,14 @@
             <button type="submit" class="button submit">Login</button>
         </div>
 
+        <div class="link">
+            <p>New to FreshMarket?</p>
+            <h4><a href='./SignUp.php'>Register an Account</a>
+            </h4>
+        </div>
+
     </form>
+    
 </body>
 
 </html>
-
-<?php
-
-require_once './Backend/DatabaseHelper.php';
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-    if (!empty($_POST["PhoneNumber"]) && !empty($_POST["Password"])) {
-
-        $query = "SELECT * FROM Users where PhoneNumber = ?";
-        $connection = DatabaseHelper::createConnection();
-        try {
-            $result = $connection->prepare($query);
-            $result->execute([$_POST["PhoneNumber"]]);
-            $data = $result->fetchAll(PDO::FETCH_ASSOC);
-            $password = $data[0]["Password"];
-            if (password_verify($_POST["Password"], $password)) {
-                if ($data[0]["Role"] == "User") {
-                    session_start();
-                    $_SESSION["Role"] = "User";
-                    $_SESSION["PhoneNumber"] = $_POST["PhoneNumber"];
-                    $_SESSION["Id"] = $data[0]["Id"];
-                    header("Location: ./Profile.php");
-                    exit();
-                } else {
-                    session_start();
-                    $_SESSION["Role"] = "Admin";
-                    $_SESSION["PhoneNumber"] = $_POST["PhoneNumber"];
-                    $_SESSION["Id"] = $data[0]["Id"];
-                    header("Location: ./Admin.php");
-                    exit();
-                }
-            }
-        } catch (PDOException $e) {
-            die("Error occcured: " . $e->getMessage());
-        }
-    }
-}
-
-
-?>

@@ -91,6 +91,16 @@ body {
     font-size: 0.8rem;
 }
 
+.link{
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.link a{
+    color: var(--color1);
+}
+
 @media (min-width: 600px) {
     .form {
         min-width: 75vw;

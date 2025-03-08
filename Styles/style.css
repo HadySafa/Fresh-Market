@@ -136,12 +136,13 @@ body {
     transition: 0.3s all ease;
 }
 
+
 .product-category:hover{
     cursor: pointer;
     font-size: 1.25rem;
 }
 
-.product-category>h4{
+.product-category a{
     border-radius: 5px;
     min-width: 100%;
     max-width: 100%;
@@ -155,6 +156,7 @@ body {
     justify-content: center;
     align-items: center;
     color: var(--color2);
+    text-decoration: none;
 }
 
 .customersFeedback-Container>div{

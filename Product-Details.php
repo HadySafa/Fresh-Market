@@ -1,38 +1,105 @@
 <?php
 
 session_start();
-
-if (!isset($_SESSION["Id"]) || empty($_SESSION["Id"])) {
-    header("Location: Login.php");
-}
-
 require_once "./Backend/DatabaseHelper.php";
 $connection = DatabaseHelper::createConnection();
-$id;
+
+// page protection
 if (isset($_GET["Id"])) {
     $id = $_GET["Id"];
+    if (!is_numeric($id)) {
+        header("Location: ./Products.php");
+        exit();
+    }
+    try {
+        $query = "SELECT * FROM Products where Id = ?";
+        $result = $connection->prepare($query);
+        $result->execute([$id]);
+        $data = $result->fetchAll(PDO::FETCH_ASSOC);
+        if (!isset($data[0]['Id'])) {
+            header("Location: ./Products.php");
+            exit();
+        }
+        $product = $data[0];
+    } catch (PDOException $e) {
+        // handle error
+    }
+} else {
+    header('Location: ./Products.php');
+    exit();
 }
 
-try {
-    $query = "SELECT * FROM Products where Id = ?";
-    $result = $connection->prepare($query);
-    $result->execute([$id]);
-    $data = $result->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    die("Error occcured: " . $e->getMessage());
-}
-
+$productInCart = false;
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_SESSION["Products"])) {
-        if (!in_array($id, $_SESSION["Products"])) {
+    if (isset($_SESSION['Id']) && !empty($_SESSION['Id'])) {
+        if (isset($_SESSION["Products"])) {
+            if (!in_array($id, $_SESSION["Products"])) {
+                $_SESSION["Products"][] = $id;
+                $_SESSION["Quantities"][$id] = $_POST["Quantity"];
+            }
+            else{
+                $_SESSION["Quantities"][$id] = $_POST["Quantity"];
+            }
+        } else {
+            // first time
             $_SESSION["Products"][] = $id;
             $_SESSION["Quantities"][$id] = $_POST["Quantity"];
-            header("Location: Cart.php");
         }
+        $productInCart = true;
+        header("Location: Cart.php");
     } else {
-        $_SESSION["Products"][] = $id;
-        $_SESSION["Quantities"][$id] = $_POST["Quantity"];
+        header('Location: ./Login.php');
     }
+}
+
+function displayProduct($product)
+{
+    $id = $product["Id"];
+    $imageSrc = $product["Image"];
+    $name = $product["Name"];
+    $price = $product["Price"];
+    $desc = $product["Description"];
+    $quantity = $product["Quantity"];
+    $chosenValue = 1;
+    if (inCart($id)) {
+        $chosenValue = $_SESSION['Quantities'][$id];
+    }
+    $buttonText = inCart($id) ? "-- Edit Quantity --" : "Add To Cart";
+    echo "
+        <div class='image-container'><img src='$imageSrc' class='Product Image'></div>
+
+        <form method='POST' class='details'>
+            <div class='row1'>
+                <h4>$name</h4>
+                <p>$$price</p>
+            </div>
+            <div class='row2'>
+                <p>$desc</p>
+            </div>
+            <div class='row2'>
+                <p>Available Quantity $quantity</p>
+            </div>
+            <div class='row3'>
+                <button type='button' id='minus'><i class='fa-solid fa-minus'></i></button>
+                <input type='number' id='productQuantity' name='Quantity' value='$chosenValue' max='$quantity' min='1' data-maxQuantity='$quantity'>
+                <button type='button' id='plus'><i class='fa-solid fa-plus'></i></button>
+            </div>
+            <div class='row4'>
+                <input type='hidden' name='Id' value='$id' />
+                <button type='submit'>$buttonText</button>
+            </div>
+        </form>";
+}
+
+function inCart($id)
+{
+    $available = false;
+    if (isset($_SESSION['Products'])) {
+        for ($i = 0; $i < count($_SESSION['Products']); $i++) {
+            if ($_SESSION['Products'][$i] == $id) $available = true;
+        }
+    }
+    return $available ? true : false;
 }
 
 ?>
@@ -52,44 +119,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <body>
     <section class="product-details">
-
         <?php
-        $imageSrc = $data[0]["Image"];
-        $name = $data[0]["Name"];
-        $price = $data[0]["Price"];
-        $desc = $data[0]["Description"];
-        $quantity = $data[0]["Quantity"];
-        $productInCart = false;
-        if (isset($_SESSION["Products"])) {
-            if (in_array($id, $_SESSION["Products"])) {
-                $productInCart = true;
-            } else {
-                $productInCart = false;
-            }
-        }
-        $buttonText = $productInCart ? "-- Added To Cart --" : "Add To Cart";
-        echo "
-        <div class='image-container'><img src='$imageSrc' class='Product Image'></div>
-
-        <form method='POST' class='details'>
-            <div class='row1'>
-                <h4>$name</h4>
-                <p>$ $price</p>
-            </div>
-            <div class='row2'>
-                <p>$desc</p>
-            </div>
-            <div class='row3'>
-                <button id='minus'><i class='fa-solid fa-minus'></i></button><input type='number' name='Quantity' value='1' max='$quantity' min='1' data-maxQuantity='$quantity'><button id='plus'><i class='fa-solid fa-plus'></i></button>
-            </div>
-            <div class='row4'>
-                <input type='hidden' name='Id' value='$id' />
-                <button type='submit'>$buttonText</button>
-            </div>
-        </form>";
-
+        displayProduct($product);
         ?>
-
     </section>
 </body>
 

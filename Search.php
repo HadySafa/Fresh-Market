@@ -6,23 +6,21 @@ $data = [];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $connection = DatabaseHelper::createConnection();
-
     if (isset($_POST["SearchParameter"]) && !empty($_POST["SearchParameter"])) {
         $searchParameter = $_POST["SearchParameter"];
-        $query = "SELECT * FROM Products WHERE Name LIKE '%$searchParameter%'";
-
         try {
+            $query = "SELECT * FROM Products WHERE Name LIKE '%$searchParameter%'";
+            $connection = DatabaseHelper::createConnection();
             $result = $connection->query($query);
             $data = $result->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            die("Error occcured: " . $e->getMessage());
+            // handle error
         }
     }
+    
 }
 
-function returnLink($data)
-{
+function displayLink($data){
     $image = $data["Image"];
     $name = $data["Name"];
     $id = $data["Id"];
@@ -45,7 +43,6 @@ function returnLink($data)
     <link rel="icon" href="./Images/shop-solid.svg" type="image/x-icon">
     <link rel="stylesheet" href="./Styles/search.css" />
     <link rel="stylesheet" href="./Styles/header.css" />
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script src="./Script/script.js"></script>
 </head>
@@ -81,14 +78,13 @@ function returnLink($data)
             echo "<div class='results'>";
             echo "<h4>Search results for '$searchParameter'</h4>";
             for ($i = 0; $i < count($data); $i++) {
-                returnLink($data[$i]);
+                displayLink($data[$i]);
             }
             echo "</div>";
         }
         else{
             echo "<div>No Results<div>";
         }
-
 
         ?>
 

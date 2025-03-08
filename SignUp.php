@@ -12,23 +12,21 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $connection = DatabaseHelper::createConnection();
             $query = "INSERT INTO users (Name, Email, PhoneNumber, Password ,Role) VALUES (?, ?, ?, ?, ?)";
             $result = $connection->prepare($query);
-            $result->execute([$data["FullName"], $data["Email"], $data["PhoneNumber"], $data["Password"], "Admin"]);
+            $result->execute([$data["FullName"], $data["Email"], $data["PhoneNumber"], $data["Password"], "User"]);
             $userId = $connection->lastInsertId();
             if($userId){
                 header("Location: ./Login.php");
                 exit();
             }
         } else {
-            die("Error in data entry!");
+            // handle error: wrong data entry
         }
     } else {
-        die("All fields are required!");
+        // handle error: all fields are required
     }
 }
 
-
-function validateInput($array)
-{
+function validateInput($array){
     if (is_numeric($array["PhoneNumber"]) && strlen($array["PhoneNumber"]) == 8) {
         if (filter_var($array["Email"], FILTER_VALIDATE_EMAIL)) {
             $pattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/';
@@ -43,8 +41,7 @@ function validateInput($array)
     return null;
 }
 
-function hashPassword($password)
-{
+function hashPassword($password){
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     return $hashedPassword;
 }

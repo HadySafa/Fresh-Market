@@ -3,17 +3,15 @@
 require_once './Backend/DatabaseHelper.php';
 
 try {
-    $connection = DatabaseHelper::createConnection();
     $query = 'SELECT * FROM reviews NATURAL JOIN (SELECT ID AS UserID,Name FROM users) AS users';
+    $connection = DatabaseHelper::createConnection();
     $result = $connection->query($query);
     $data = $result->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOEXCEPTION $e) {
-    die("Error occured");
+    // handle error
 }
 
-
-function displayReview($data)
-{
+function displayReview($data){
     $name = $data["Name"];
     $description = $data["Description"];
     echo "
@@ -87,13 +85,13 @@ function displayReview($data)
             <h2>Products</h2>
             <div>
                 <div class="product-category">
-                    <h4>Fruits and Vegetables</h4>
+                    <a href="./Products.php#Fruits&Vegetables"><h4>Fruits and Vegetables</h4></a>
                 </div>
                 <div class="product-category">
-                    <h4>Groceries</h4>
+                    <a href="./Products.php#Groceries"><h4>Groceries</h4></a>
                 </div>
                 <div class="product-category">
-                    <h4>Snacks and Beverages</h4>
+                    <a href="./Products.php#Snacks&Beverages"><h4>Snacks and Beverages</h4></a>
                 </div>
             </div>
         </section>
@@ -110,7 +108,8 @@ function displayReview($data)
             <h2>Customers Feedback <i class="fa-regular fa-comment"></i></h2>
             <div>
                 <?php
-                for($i = 0; $i < count($data);$i++){
+                $max = count($data) > 4 ? 4 : count($data);
+                for($i = 0; $i < $max; $i++){
                     displayReview($data[$i]);
                 }
                 ?>

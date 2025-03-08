@@ -1,16 +1,17 @@
 <?php
+
 require_once "./Backend/DatabaseHelper.php";
 
-$query = "SELECT * FROM Products";
-$connection = DatabaseHelper::createConnection();
 try {
+    $query = "SELECT * FROM Products";
+    $connection = DatabaseHelper::createConnection();
     $result = $connection->query($query);
     $data = $result->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    die("Error occcured: " . $e->getMessage());
+    // handle error
 }
 
-function returnLink($data)
+function displayLink($data)
 {
     $image = $data["Image"];
     $name = $data["Name"];
@@ -20,6 +21,7 @@ function returnLink($data)
           <p>$name</p><i class='fa-solid fa-arrow-right'></i>
           </a>";
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -64,7 +66,7 @@ function returnLink($data)
                 <?php
                 for ($i = 0; $i < count($data); $i++) {
                     if ($data[$i]["Category"] == "Fruits&Vegetables") {
-                        returnLink($data[$i]);
+                        displayLink($data[$i]);
                     }
                 }
                 ?>
@@ -77,7 +79,7 @@ function returnLink($data)
                 <?php
                 for ($i = 0; $i < count($data); $i++) {
                     if ($data[$i]["Category"] == "Groceries") {
-                        returnLink($data[$i]);
+                        displayLink($data[$i]);
                     }
                 }
                 ?>
@@ -90,13 +92,14 @@ function returnLink($data)
                 <?php
                 for ($i = 0; $i < count($data); $i++) {
                     if ($data[$i]["Category"] == "Snacks&Beverages") {
-                        returnLink($data[$i]);
+                        displayLink($data[$i]);
                     }
                 }
                 ?>
             </div>
         </section>
     </div>
+
 </body>
 
 </html>

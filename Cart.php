@@ -17,7 +17,7 @@ function displayTableRow($data, $quantity)
     $GLOBALS['totalPrice'] += $computedPrice;
     echo "
     <tr class='row'>
-    <td>$productName</td>
+    <td><a href='./Product-Details.php?Id=$id'>$productName</a></td>
     <td>$quantity</td>
     <td>$computedPrice</td>
     <td><form method='post'><input type='hidden' name='Id' value='$id' /><button class='remove-styles' type='submit'><i class='fa-solid fa-trash delete'></i></button></form></td>
@@ -29,11 +29,26 @@ function displayTotalPrice()
     echo ($GLOBALS['totalPrice']);
 }
 
+function returnProductData($productId)
+{
+    try {
+        $connection = DatabaseHelper::createConnection();
+        $query = "SELECT * FROM Products where Id = ?";
+        $result = $connection->prepare($query);
+        $result->execute([$productId]);
+        $data = $result->fetchAll(PDO::FETCH_ASSOC);
+        return ($data[0]);
+    } catch (PDOException $e) {
+        // handle error
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     foreach ($_SESSION['Products'] as $key => $value) {
         if ($value == $_POST['Id']) {
             unset($_SESSION['Products'][$key]);
             unset($_SESSION['Quantities'][$_POST['Id']]);
+            $_SESSION['Products'] = array_values($_SESSION['Products']);
             break;
         }
     }
@@ -73,34 +88,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </header>
         <div>
             <?php
-            if (isset($_SESSION["Products"])) {
+            if (isset($_SESSION["Products"]) && count($_SESSION["Products"]) > 0) {
                 echo "<table class='table'>";
-                echo "<tr class='header'>
-                          <th>Item Name</th>
-                          <th>Quantity</th>
-                          <th>Computed Price $</th>
-                          <th>Remove</th>
-                          </tr>";
+                echo "<tr class='header'> <th>Item Name</th><th>Quantity</th><th>Computed Price $</th><th>Remove</th></tr>";
                 for ($i = 0; $i < count($_SESSION["Products"]); $i++) {
                     $productId = $_SESSION["Products"][$i];
-                    try {
-                        $query = "SELECT * FROM Products where Id = ?";
-                        $result = $connection->prepare($query);
-                        $result->execute([$productId]);
-                        $data = $result->fetchAll(PDO::FETCH_ASSOC);
-                        displayTableRow($data[0], $_SESSION['Quantities'][$productId]);
-                    } catch (PDOException $e) {
-                        die("Error occcured: " . $e->getMessage());
-                    }
+                    $quantity = $_SESSION['Quantities'][$productId];
+                    displayTableRow(returnProductData($productId), $quantity);
                 }
                 echo "</table>";
             } else {
-                echo "No Products Added To Cart";
+                echo "<div class='no-products'>No Products Added To Cart</div>";
             }
             ?>
             <div class="subContainer">
                 <p>Total $<span class="price"><?php displayTotalPrice() ?></span></p>
                 <a href="./Checkout.php">Checkout</a>
+                <a href="./Products.php">Continue Shopping</a>
             </div>
         </div>
     </div>

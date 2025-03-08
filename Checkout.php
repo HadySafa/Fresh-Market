@@ -1,21 +1,12 @@
 <?php
 
-function getDateTime()
-{
-    $date = new DateTime('now', new DateTimeZone('UTC'));
-    $isoDate = $date->format('c');
-    return $isoDate;
-}
-
 require_once './Backend/DatabaseHelper.php';
-
 session_start();
 
 if (isset($_SESSION["Id"])) {
-    if(isset($_SESSION["Products"])){
+    if (isset($_SESSION["Products"])) {
         $userId = $_SESSION['Id'];
-    }
-    else{
+    } else {
         header("Location: Cart.php");
     }
 } else {
@@ -37,12 +28,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $result = $connection->prepare($query);
             $productId = $_SESSION['Products'][$i];
             $quantity = $_SESSION['Quantities'][$productId];
-            $result->execute([$quantity,$productId,$orderId]);
-            unset($_SESSION['Products']);
-            unset($_SESSION['Quantities']);
-            header('Location: ./Profile.php');
+            $result->execute([$quantity, $productId, $orderId]);
+            $query = "UPDATE products SET Quantity = Quantity - ? WHERE Id = ?";
+            $result = $connection->prepare($query);
+            $result->execute([$quantity, $productId]);
         }
+        unset($_SESSION['Products']);
+        unset($_SESSION['Quantities']);
+        header('Location: ./Profile.php');
     }
+}
+
+function getDateTime()
+{
+    $date = new DateTime('now', new DateTimeZone('UTC'));
+    $isoDate = $date->format('c');
+    return $isoDate;
 }
 
 ?>

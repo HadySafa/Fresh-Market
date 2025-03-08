@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
 
         password.addEventListener("blur", () => {
-            const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+            const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8}$/;
             if (password.value.length > 0 && !pattern.test(password.value)) {
                 password.value = ""
                 document.getElementById("passwordError").textContent = "Password must be at least 8 characters, containing a number, lowercase and uppercase characters."
@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // handling button functionality in product-details
 document.addEventListener("DOMContentLoaded", () => {
 
-    const quantity = document.querySelector(".row3>input")
+    const quantity = document.getElementById("productQuantity")
     const minus = document.getElementById("minus")
     const plus = document.getElementById("plus")
 
@@ -157,9 +157,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (quantity && quantity.value > 0) {
 
-        minus.addEventListener("click", decrease)
+        console.log(quantity)
 
-        plus.addEventListener("click", increase)
+        minus.addEventListener("mousedown", decrease)
+
+        plus.addEventListener("mousedown", increase)
 
     }
 
@@ -331,7 +333,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 })
 
-
+// formatting date
 document.addEventListener("DOMContentLoaded", () => {
 
     const ordersTime = document.querySelectorAll(".time")

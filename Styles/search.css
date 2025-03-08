@@ -55,7 +55,7 @@ body {
 }
 
 .input:focus{
-    border-color: var(--color3);
+    border-width: 3px;
 }
 
 .submit{

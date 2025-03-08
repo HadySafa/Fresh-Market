@@ -28,7 +28,7 @@ if (isset($_SESSION["Id"])) {
 }
 
 try {
-    $query = "SELECT * FROM orders WHERE UserId = ?";
+    $query = "SELECT * FROM orders WHERE UserId = ? ORDER BY Id DESC";
     $result = $connection->prepare($query);
     $result->execute([$_SESSION['Id']]);
     $data = $result->fetchAll(PDO::FETCH_ASSOC);

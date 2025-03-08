@@ -59,10 +59,7 @@ Import the SQL File in XAMPP
 
 - Choose the SQL file from the cloned repository (found in Design-Docs folder) and click "Go" to import it.
 
-Browse the following URL
-```bash
-http://localhost/freshmarket
- ```
+- Browse the application through the following URL (http://localhost/freshmarket).
     
 ## Future Work
 

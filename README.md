@@ -72,3 +72,12 @@ Import the SQL File in XAMPP
 
 For simplicity, it is assumed that product names are unique, without considering brand or weight specifications.
 
+## Screenshots
+
+![Login](./Design-Docs/README-Images/Login.png)
+![Products](./Design-Docs/README-Images/Products.png)
+![Seach](./Design-Docs/README-Images/Search.png)
+![Details](./Design-Docs/README-Images/Detials.png)
+![Cart](./Design-Docs/README-Images/Cart.png)
+
+

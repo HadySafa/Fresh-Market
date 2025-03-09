@@ -1,6 +1,6 @@
 # Fresh Market
 
-Fresh Market is a fully functional, e-commerce web application that allows users to register accounts, browse and search for products, add items to their cart, place orders, and provide feedback or suggestions. Additionally, administrators are responsible for managing orders, including marking them as delivered once they have been sent to the customer.
+Fresh Market is a fully functional, e-commerce web application that allows users to register accounts, browse and search for products, add items to their cart, place orders, and provide feedback or suggestions. Additionally, administrators are responsible for managing orders, marking them as delivered, add & delete products, and edit quantities.
 
 ## Core Features
 
